@@ -1,0 +1,19 @@
+# Existem 2 estilos para escrever em yaml
+
+# Block
+host: divinoluiz 
+datacenter: 
+  location: São Paulo
+  router: 42
+roles: 
+  - web 
+  - dns 
+
+# Flow, parecido com o JSON
+host2: "divinoluiz"
+datacenter2: 
+  {
+    location: São Paulo,
+    router: 42
+  }
+roles2: [web, dns]

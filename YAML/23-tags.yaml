@@ -1,0 +1,7 @@
+%TAG ! tag:host:divinoluiz:
+---
+host: divinoluiz 
+datacenter: 
+  location: !DIVINOLUIZ São Paulo # usando a TAG
+  router: !!str 42
+  switch: !!int 36 # usando uma tag do próprio yaml

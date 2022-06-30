@@ -1,0 +1,53 @@
+Dockerfile: São arquvios docker no qual são colocadas instruções (em YAML) para criar/build imagens, com essa imagem, podemos
+criar containers
+
+
+Criando um dockerfile
+Ex: nginx
+
+FROM nginx:1.21 -> Imagem criada a partir do nginx:1.21 -> FROM é uma instrução obrigatória.
+LABEL manteiner="Divino Luiz" -> LABEL: Para indicar alguma informação, como o de manteiner, ou seja, quem mantém essa imagem
+COPY . /usr/share/nginx/html  -> Copia tudo do diretório "." (diretório atual) para o diretório "/usr/share/nginx/html" que está no container
+EXPOSE 80 -> expõe esse container quando criado na porta 80. Esse comando serve para documentação. Essa instrução não publica a porta efetivamente, já que o propósito dela é fazer uma comunicação entre quem escreveu o Dockerfile e quem rodará o container.
+
+RUN ->  A instrução RUN é bem interessante. Ela pode ser executada uma ou mais vezes e, com ela, posso definir quais serão os comandos executados na etapa de criação de camadas da imagem.
+EX:
+FROM ubuntu:18.04
+RUN apt-get update
+RUN apt-get install openjdk-8-jdk -y
+
+VOLUME -> Essa instrução cria uma pasta em nosso container que será compartilhada entre o container e o host, funcionando do seguinte modo:
+FROM ubuntu:18.04
+RUN apt-get update
+RUN apt-get install openjdk-8-jdk -y
+VOLUME /foo
+Quando criarmos um container dessa imagem, ele criará uma pasta chamada foo. Todo arquivo criado dentro dessa pasta será acessível a partir da máquina host no caminho /var/lib/docker/volumes!
+
+WORKDIR -> Essa instrução tem o propósito de definir o nosso ambiente de trabalho. Com ela, definimos onde as instruções CMD, RUN, ENTRYPOINT, ADD e COPY executarão suas tarefas, além de definir o diretório padrão que será aberto ao executarmos o container.
+
+Ver também: ADD, CMD, ENTRYPOINT (faz o mesmo que o CMD, porém seus parâmetros não são sobrescritos).
+
+Criando a build de um dockerfile, ou seja, gerando a imagem.
+docker build -f nome_do_dockerfile -t usuário_dockerhub/nome_da_imagem:versão . (não esquecer do ".", pois gera erro na criação da imagem)
+-f: para informar o nome do dockerfile
+-t: para criar uma tag
+. : para especifiar o path do dockerfile
+
+Para subir esse container
+docker run --name dluiz_nginx -d -p 8080:80 dluiz/servidor_nginx:v1
+
+Subindo uma imagem no dockerhub
+docker image push nome_imagem:versão
+
+Configurar o docker com o dockerhub
+- Criar uma conta no dockerhub
+docker login --username=dluiz
+password:
+
+Para subir um container alpine de forma interativa (utilizando a imagem criada na pasta Revisao_09_06_2022):
+docker run -it --name "my-alpine" my-alpine:1.0 
+
+Após derrubar o container e tentar subir de novo, usar o comando wait que vai segurar o container executando
+docker container wait my-alpine 
+Depois basta fazer o comando abaixo para acessar o terminal:
+docker exec -it my-alpine sh

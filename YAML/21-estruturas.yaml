@@ -1,0 +1,17 @@
+# Estruturas: podemos ter múltiplas diretivas ou configurações em 
+# um único arquivo. Para marcar o início de uma diretiva ou configuração
+# utilizamos traço tríplo ---
+# Com isso, podemos ter várias configurações em um único arquivo e assim usar
+# chaves repetidas no mesmo arquivo.
+
+# Iniciando uma configuração
+---
+host: divinoluiz
+datacenter:
+  location: São Paulo
+
+# Iniciando uma configuração
+---
+host: divinoluiz
+datacenter:
+  location: Colorado

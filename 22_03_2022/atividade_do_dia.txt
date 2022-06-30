@@ -1,0 +1,5 @@
+Data - 22/03/2022
+
+O que foi feito no dia?
+
+- Docker e volumes

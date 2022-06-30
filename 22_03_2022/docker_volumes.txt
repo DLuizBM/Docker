@@ -1,0 +1,77 @@
+- Containers não persistem dados.
+Ex: Se criamos um container e salvamos um arquivo, após pararmos o container o arquivo ainda vai existir?
+A solução para esse problema é a utilização de volumes, também chamado de volumes da dados.
+
+- Criando uma imagem do linux alpine para testar a persistência de dados
+docker run --name linux_alpine --rm -i -t alpine:3.12.1 sh
+-- name: nomeia o container
+-- rm -i -t: ativa algo, no caso o sh (shell)
+sh: shell do linux
+ctrl + d: sai do container
+
+Para criar um arquivo quando o container estiver sendo executado, basta fazer:
+echo "Teste" >> teste.txt
+
+Ao sair do container e subir ele novamente, com o comando da linha 6, veremos que o arquivo não mais existe.
+
+Volumes: dá se o nome de volume a prática de expor arquivos e diretórios na máquina(host) e não no container, dessa forma, qualquer alteração feita é colocada no seu computador e não no container.
+
+ Criando volumes em um container
+ 
+Exemplo com o nginx:
+docker run -v "/nome_da_pasta/subdiretórios/..." --name "nome_container" -p -d 8080:80 nginx:1.21
+-v: adiciona o volume, ou seja, o diretório onde tudo ficará guardado
+docker exec -it nome_container sh
+Executa de forma iterativa o shell do nginx
+
+Exemplo com o alpine (imagem do ubuntu)
+docker run -v "/divino" --name "Ubuntu20.04"-it alpine:3.12.1
+-it: The -it instructs Docker to allocate a pseudo-TTY connected to the container’s stdin; creating an interactive bash shell in the container (Importante para criar um shell que será executado toda vez que o container subir)
+Para subir o container:
+docker container start -i id_container ou nome_container 
+-i: Deixa o container interativo
+
+Tanto no exemplo do container do nginx como no do alpine, os volumes serão gravados e mesmo após parar o container 
+os arquivos e pastas criadas ficarão salvos, entretando, se o container for deletado todos os arquivos e pastas
+serão perdidos. Isso acontece pois não estamos informando para o docker qual diretório do nosso computador deve ser
+mapeado com o volume criado no docker, o docker cria um diretório local aleatório e esse diretório local será deletado
+quando o container for deletado.
+
+Montagem
+
+Montagem é fazer o mapeamento do volume docker com o diretório do nosso computador
+Exemplo com o alpine:
+- Comando padrão: docker run -v "pasta_de_montagem_no_meu_computador:pasta_de_montagem_no_meu_container" --name nome_container -it imagem:versão_imagem
+
+- Comando real: docker run -v "/home/divinoluiz/Documentos/Estudo/Docker/21_03_2022/pasta_montagem_docker:/usr/share/divino" --name ubuntu -it alpine:3.12.1
+
+Inspect
+
+O inspect é uma forma de analisar o container docker
+docker inspect id_container
+
+Observar a chave Mounts, ela contém o Source e o Destination.
+O Source contém a pasta de mapeamento do nosso computador, enquanto que o Destination o mapeamento para a pasta do container.
+
+Ex: Criar um container com banco de dados mysql 8.0.28
+docker run -v "/home/divino/Documentos/databases_docker/mysql:/var/lib/mysql" --name "mysql8.0.28" -e MYSQL_ROOT_PASSWORD=12345678 -d -p 3306:3306 mysql:8.0.28 
+/var/lib/mysql: por default é onde o mysql guarda seus arquivos de dados
+
+Para se conectar com o Mysql WorkBench, deve-se ir na loja de aplicativos, entrar nas permissões do Mysql WorkBench e habilitar a função Read, add, change, or remove saved passwords
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 

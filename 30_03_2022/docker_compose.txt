@@ -1,0 +1,76 @@
+Docker compose
+- É um arquivo YAML que concentra todos os comandos e configurações para que os containers sejam criados.
+
+Baixar o docker compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+Teste: docker-compose --version
+
+Criando uma aplicação Django que estará rodando em um nginx 
+A aplicação e seus recursos se encontram no seguinte diretório:
+/home/divinoluiz/Documentos/Estudo/Docker/30_03_2022/03-fusion_inicio
+
+- fusion.dockerfile
+FROM python:3.9.0-alpine
+LABEL maintainer "Geek University <contato@geekuniversity.com.br>"
+COPY . /var/www  -> Copiando tudo do diretório do host (nosso computador) para o alpine na pasta /var/www
+WORKDIR /var/www
+RUN apk update && apk add zlib-dev jpeg-dev gcc musl-dev python3-dev postgresql-dev && pip install -r requirements.txt && python manage.py collectstatic --noinput
+ENTRYPOINT gunicorn --bind 0.0.0.0:8000 fusion.wsgi -> como estamos usando um servidor web, é usado o gunicorn para iniciar a aplicação
+EXPOSE 8000
+
+- nginx.dockerfile
+O nginx vai ser o loadbalance (estarão rodando 3 aplicações django ao mesmo tempo) e o proxy entre a aplicação na porta 8000 para a porta 80
+FROM nginx:1.19.4-alpine
+LABEL maintainer "Geek University <contato@geekuniversity.com.br>"
+ENV PYTHONUBUFFERED 1 -> Variável de ambiente necessária para aplicação python
+ENV LANG C.UTF-8 -> Variável de ambiente necessária para aplicação python
+ENV DEBIAN_FRONTEND=noninteractive -> Variável de ambiente necessária para aplicação python
+COPY /docker/config/nginx.conf /etc/nginx/nginx.conf -> Realizando a cópia do arquivo nginx.conf que está dentro de /docker/... para o nginx na pasta /etc/nginx/conf.conf
+COPY . /var/www -> Copiando tudo do diretório do host (nosso computador) para o nginx na pasta /var/www
+EXPOSE 80 443 -> expondo as portas
+ENTRYPOINT ["nginx"] -> "nginx" para executar o nginx
+CMD ["-g", "daemon off;"] -> complementando o comando "nginx" com -g e daemon off. Fica, nginx -g daemon off
+
+- pgfusion.dockerfile
+FROM postgres:13.1-alpine
+LABEL maintainer "Geek University <contato@geekuniversity.com.br>"
+ENV POSTGRES_USER=fusion_user
+ENV POSTGRES_PASSWORD=fusion_pass
+ENV POSTGRES_DB=fusion_app
+EXPOSE 5432
+
+- Arquivo nginx.conf
+Nesse arquivo fazemos o balanço de carga, indicando que estamos executando 3 aplicações django, o comando abaixo indica a quantidade de aplicações.
+upstream fusion-upstream {
+        least_conn;
+
+        server fusion1:8000 weight=10 max_fails=3 fail_timeout=30s;
+        server fusion2:8000 weight=10 max_fails=3 fail_timeout=30s;
+        server fusion3:8000 weight=10 max_fails=3 fail_timeout=30s;
+
+        keepalive 64;
+    }
+
+OBS: settings.py da aplicação
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'USER': 'fusion_user',
+        'PASSWORD': 'fusion_pass',
+        'HOST': 'pgfusion',
+        'PORT': '5432',
+    }
+}
+ HOST: está configurado com o nome do serviço e não com o ip de onde se encontra o banco, devemos então criar o serviço do banco com esse nome (no docker-compose.yaml).
+ 
+ - Buildar o docker-compose (deve-se estar no mesmo diretório do arquivo docker-compose)
+ docker-compose build
+ Após a criação das imagens, podemos criar os containers, redes e etc, usando:
+ docker-compose up -d -> sob a aplicação, container, rede e etc no docker-compose, cria as imagens econtainers
+ dokcer-compose down -> durraba a aplicação, container, rede e etc no docker-compose, destói as imagens e containers.
+ -d: detach para não segurar o console
+ - Criando as tabelas com o container da aplicação rodando
+ docker exec -it fusion1 python manage.py migrate 
+

@@ -1,0 +1,10 @@
+# As sequências podem ser listas, arrays, coleções
+
+# Lista
+roles:
+  - web
+  - dns
+  # sequência: quando há uma lista de valores
+
+roles2: [web, dns]
+

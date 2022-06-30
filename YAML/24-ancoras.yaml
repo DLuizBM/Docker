@@ -1,0 +1,24 @@
+# Âncoras são utilizadas para armazenar e reutilizar dados
+# Para definir usamos & e para usar/referencias *
+
+---
+host: divinoluiz
+datacenter:
+  location: &SP São Paulo 
+  # Definindo uma âncora SP com o valor São Paulo
+
+---
+host: divinoluiz
+datacenter:
+  location: *SP
+  # O valor lido aqui será São Paulo
+
+---
+roles: &ghost
+  - web
+  - database 
+
+---
+roles: *ghost
+  # O valor inserido aqui será a lista [web, database]
+

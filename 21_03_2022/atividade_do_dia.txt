@@ -1,0 +1,9 @@
+Data - 21/03/2022
+
+O que foi feito no dia?
+
+- Estudo de imagem docker.
+
+- Sistema de arquivos em camadas.
+
+- Acessar um container.

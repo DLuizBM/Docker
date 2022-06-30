@@ -1,0 +1,5 @@
+FROM alpine:latest
+LABEL manteiner="Divino Luiz" date="09/06/2022"
+RUN apk add openjdk8
+VOLUME "/divino" 
+

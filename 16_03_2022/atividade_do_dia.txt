@@ -1,0 +1,7 @@
+Data - 16/03/2022
+
+O que foi feito no dia?
+
+- Preparação do ambiente docker.
+
+- Sintaxe da linguagem YAML.

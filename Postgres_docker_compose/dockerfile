@@ -1,0 +1,5 @@
+FROM postgres:13-alpine
+LABEL maintainer "Divino Luiz B. Moreira"
+ENV POSTGRES_USER=user
+ENV POSTGRES_PASSWORD=123456
+EXPOSE 5432

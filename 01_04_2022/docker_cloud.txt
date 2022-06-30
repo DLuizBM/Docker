@@ -1,0 +1,11 @@
+Docker cloud
+
+Colocando uma aplicação na nuvem
+
+Fazer o teste de execução local
+Aplicação em: /home/divinoluiz/Documentos/Estudo/Docker/01_04_2022/03-fusion_cloud
+- Criar o build pelo docker-compose
+docker-compose build
+- Subir os serviços
+docker-compose up
+

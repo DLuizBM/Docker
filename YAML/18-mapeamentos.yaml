@@ -1,0 +1,10 @@
+# Mapeamento chave valor
+# Não pode haver chave duplicada
+# host - chave : divimoluiz - valor
+host: divinoluiz 
+datacenter: 
+  location: São Paulo
+  router: 42
+roles: 
+  - web 
+  - dns 

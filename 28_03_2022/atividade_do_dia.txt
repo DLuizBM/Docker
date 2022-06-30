@@ -1,0 +1,7 @@
+Data - 28/03/2022
+
+O que foi feito no dia?
+
+- Criar uma imagem docker com uma aplicação python.
+
+- Redes no docker.

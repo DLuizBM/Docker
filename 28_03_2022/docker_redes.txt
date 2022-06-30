@@ -1,0 +1,77 @@
+	Docker Redes
+
+- O docker cria um sistema de rede, chamado docker0, e distribui IP's aos containers criados.
+- Trabalhando em uma rede docker e vários containers, devemos levar em conta, por segurança, quais containers
+podem ou não ter seus serviços expostos. 
+- O docker utiliza um driver de rede conhecido como bridge (docker0). Desta forma, ao criarmos um container, este irá receber uma interface de rede própria e um enderaçamento IP. A bridge faz uma ponte entre o host(computador na qual o docker está instalado) e os containers, dessa forma, o container através da bridge pode acessar a internet.
+
+OBS: Listar todas as redes
+- docker network ls
+
+Comunicação entre containers
+- Criando o primeiro container 
+docker run --name "container_bridge_1" -d alpine:3.12.1 sleep 5000
+- sleep: fica segurando a execução do container, o alpine é uma imagem linux, ao criar o container, nada é executado, dessa forma, sem o sleep o container executaria e logo em seguida pararia.
+- -d: -d permite a execução em background, ou seja, não fica segurando o terminal até a execução acabar, com isso, é possível executar outros comandos enquanto o container está rodando.
+
+- Criando o primeiro container 
+docker run --name "container_bridge_2" -d alpine:3.12.1 sleep 5000
+
+Com os dois container rodando, podemos ver o endereço de ip dos containers
+docker exec container_bridge_1 ifconfig
+retorna os endereços de rede
+ex: 172.17.0.2
+
+Com os dois container rodando, podemos executar o shell de um e dar o ping
+docker exec -it container_bridge_2 sh
+-it: fica iterativo e faz aparecer o terminal /#
+-i: fica iterativo, mas não aparece o terminal /#
+Dentro do shell do container, podemos fazer:
+ping 172.17.0.2
+
+- Passando o comando ping direto
+docker exec -it container_bridge_2 ping 172.17.0.2
+
+Inspecionando redes
+Ex: bridge, interface de rede padrão do docker
+docker network inspect bridge
+
+- Criando faixas de rede no docker
+docker network create --driver bridge nova_faixa
+--driver: especifica o driver que a nova faixa de rede vai ter
+Nova faixa: 172.18.0.0
+
+- Criando container na em uma faixa de rede específica
+docker run --name "container_3" -d --net nova_faixa alpine:3.12.1 sleep 5000
+--net: para especificar a faixa de rede em que deve ser criado
+sleep: mantém o container executando por um determinado período de tempo
+
+OBS: Ao tentarmos dar o ping do container_3, que está em uma faixa de rede, para o container_bridge_2,
+por exemplo, que está em outra faixa de rede, não haverá comunicação.
+
+Para resolver isso é só dizer ao docker para criar uma nova ponte de comunicação entre o container e a outra rede.
+docker network connect faixa_desejada nome_do_container
+ex:
+docker network connect bridge container_3
+-Faça a conexão do container_3 à faixa bridge
+docker network connect outra_faixa container_bridge_2
+-Faça a conexão do container_bridge_2 à faixa outra_faixa
+
+Com isso, o container vai possuir 2 endereços, uma para se comunicar na faixa em que foi criado, exemplo, bridge, e outro para se comunicar na faixa outra_faixa
+
+Desconectar um container de uma faixa
+docker network disconnect faixa_desejada nome_do_container
+docker network disconnect outra_faixa container_bridge_2
+
+- Subindo uma aplicação python com banco de dados postgres
+Arquivos para essa aplicação estão em:
+/home/divinoluiz/Documentos/Estudo/Docker/28_03_2022/04-fusion
+- criar a imagem do banco primeiro e subir o container do banco para que ao criar a imagem e container da aplicação não gere erro quando a aplicação tentar criar as tabelas.
+- criar a imagem da aplicação e subir.
+OBS: criando usuário depois que a aplicação subir
+docker exec -it fusion sh
+Ao executar esse comando, o terminal abrirá no workdir especificado no fusion.dockerfile do projeto
+docker exec -it fusion sh
+fusion: nome do container criado para subir a aplicação
+
+

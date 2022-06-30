@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres:
+      build:
+        dockerfile: ./dockerfile
+        context: .
+      image: postgres-13.6
+      container_name: postgres-compose
+      ports:
+        - 5432:5432
+      volumes:
+        - /home/divino/Documentos/databases_docker/pg13:/var/lib/postgresql/data/
+
+# Apagar esse comentário para executar o arquivo
+# Um erro acontecia ao conectar o container contendo o postgres com o PgAdmin
+# Dizia que a conexão não podia ser estabelecida com o password inserido.
+# Isso poderia estar acontecendo por na primeira tentativa criar o volume na pasta
+# /home/divino/Documentos/databases_docker/postgres14 dando o build com a imagem postgres:latest
+# apagar essa imagem e fazer um novo build com uma imagem alpine de outra versão. A pasta pode
+# conter informações da outra imagem e estar bloqueando a conexão.
+# Testar essa hipótese.

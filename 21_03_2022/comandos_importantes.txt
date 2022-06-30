@@ -1,0 +1,82 @@
+Comandos importantes:
+
+docker container ls -> lista todos os containers
+docker container --help -> mostra todas as opções do comando container
+docker container rm id_container -> remover container
+docker container stop id_container -> para um container
+docker container start id_container -> para um container
+docker run -p -d porta_computador:porta_container imagem:versão -> cria um container
+docker ps -> lista todos os containers em execução
+docker ps -a -> lista todos os containers em execução e que não estão em execução
+docker image ls -> lista todas as imagens no sistema
+docker run -> baixa (se não houver no sistema) e cria um container com a imagem
+docker image rm id_imagem -> deleta uma imagem
+docker pull name_image -> Baixa uma imagem. Dessa forma, é baixada a última versão, latest
+docker pull postgres:14.2 -> Ex: baixando uma imagem específica do postgres. Deve-se colocar a tag ':' e a versão 
+docker exec -it container_bridge_2 sh
+-it: fica iterativo e faz aparecer o terminal /#
+-i: fica iterativo, mas não aparece o terminal /#
+docker pull mysql:8.0
+docker run --name "mysql" -e MYSQL_ROOT_PASSWORD=mysql -d -p 8081:3306 mysql:8.0 -> Criando um container com mysql 8.0
+e mapeando na porta 8081 para ficar visível
+
+
+Criar imagem baseada em outra
+Ex: Vamos criar uma imagem baseada na imagem do postgres 14:2
+docker image tag postgres:14.2 divino-postgres
+
+Se tentarmos deletar a imagem postgres, será apresentado um erro, pois, há uma imagem (divino-postgres)
+que se baseia nela para existir. Será necessário deletar a imagem divino-postgres para só então deletar
+a imagem postgres ou então forçar a remoção. Isso será um efeito em cascata, deletando a imagem divino-postgres e depois a imagem do postgres.
+Ex: docker image rm id_image -f
+
+Não é possível também deletar uma imagem que está sendo usada por um container, se um container foi criado
+com uma imagem, não será possível deletá-la, ao não ser que se use o comando que force isso. Isso será um efeito em cascata, parando e deletando o container e depois deletando a imagem.
+Ex: docker image rm id_image -f
+
+
+https://hub.docker.com/
+Esse site contém imagens oficiais e de terceiros para serem usadas
+ex: Postgres
+Para baixar a imagem do Postgres, basta fazer:
+docker pull postgres
+
+Como fazer acesso a porta de um container?
+Ex: Vamos executar um servidor nginx (versão 1.21).
+Para baixar e executar use:
+docker run -d -e NGINX_ENTRYPOINT_QUIET_LOGS=1 nginx:1.21
+Ao executar docker ps, podemos ver que o serviço do nginx está executando, pois há um comando (COMMAND) "/docker-entrypoint..."
+e que ele está na porta 80/tcp, porém essa por 80 não é a do computador e sim a do container, por isso se tentarmos acessar
+essa por diretamente, nada será mostrado.
+O que se deve fazer é parear/fazer um mirror com alguma porta do computador. Para fazer isso, basta executar o seguinte comando.
+docker run -d -p porta_do_computador_que_espelha_container:porta_do_container nome_da_imagem:versão
+docker run -d -p 8080:80 nginx:1.21
+
+-d: detach, desconecta se algo ficar preso não fica segurando a execução
+-p: define as portas
+-e: para passar variáveis de ambiente
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

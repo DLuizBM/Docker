@@ -1,0 +1,35 @@
+# Escalares são valores únicos, exemplo, uma string, um inteiro
+
+host: divinoluiz 
+datacenter: 
+  location: São Paulo
+  router: 42
+roles: 
+  - web 
+  - dns 
+funcionamento: |
+  segunda - das 8:00 às 17:00
+  terça - das 8:00 às 17:00
+  quarta - das 8:00 às 17:00
+  quinta - das 8:00 às 17:00
+  sexta - das 8:00 às 17:00
+  sábado - das 8:00 às 17:00 
+  domingo - das 8:00 às 17:00
+# valor escalar de múltiplas linhas, colocar o pipe |
+# nesse formato, será respeitada a formatação e será 
+# apresentado cada valor na sua linha.
+comentarios: >
+  Temos alto uso de CPU
+  desde 16/03/2022
+  Estamos investigando
+# valor escalar de múltiplas linhas, colar o símbolo de maior >
+# nesse formato, não será respeitada a formatação e será apresentado
+# tudo na mesma linha
+comentarios2: >
+  Temos alto uso de CPU
+  desde 16/03/2022
+  Estamos investigando
+
+    Author
+    Nome Author
+# Esse último bloco será de um texto secundário do primeiro

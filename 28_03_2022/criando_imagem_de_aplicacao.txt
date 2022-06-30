@@ -1,0 +1,36 @@
+Criando uma imagem de uma aplicação python.
+Dockerfile
+
+1-FROM python:3.9.0-alpine
+- Vai utilizar a imagem do python 3.9.0 alpine
+
+2-LABEL maintainer "Divino Luiz"
+- Inserindo a label de manteiner
+
+3-COPY . /var/www
+- "." Copia todos os arquivos do diretório no computador para p diretório "/var/www" no container 
+
+4-WORKDIR /var/www
+- WORKDIR é o diretório de trabalho, ou seja, diretório onde a aplicação estará funcional.
+
+5-RUN apk update && apk add zlib-dev jpeg-dev gcc musl-dev && pip install -r requirements.txt && python manage.py migrate
+- RUN é um comando que executa determinada ação, nesse caso ele executa na seguinte ordem:
+1 - apk update, após executar apk update
+2 - apk add zlib-dev jpeg-dev gcc musl-dev (adiciona todas essas bibliotecas), quando finalizar, executa
+3 - pip install -r requirements.txt (vai fazer uma instalação a partir do arquivo requirements, esse arquivo contém diversas bibliotecas, como o django, pytz, etc e a partir dele, todas as bibs adicionadas no projeto são instaladas).
+4- python manage.py migrate, executa o migrate para criar o banco de dados
+-------------------------------------------------------------------------------------------------------------
+
+6-ENTRYPOINT python manage.py runserver 0.0.0.0:8000
+O ENTRYPOINT é o comando executado no WORKDIR assim que o container é executado
+
+7-EXPOSE 8000
+Expõe o container na porta 8000
+
+
+Criando a builda da imagem
+No diretório do projeto com o dockerfile
+docker build -f Dockerfile -t dluiz/fusion:v1 .
+"." -> indica que o arquivo dockerfile está nesse diretório
+Criando o container com a imagem
+docker run --name Fusion -d -p 8080:8000 dluiz/fusion:v1

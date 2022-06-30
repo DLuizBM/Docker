@@ -1,0 +1,7 @@
+Data - 01/04/2022
+
+O que foi feito no dia?
+
+- Docker cloud.
+
+- Colocar uma aplicação na nuvem.

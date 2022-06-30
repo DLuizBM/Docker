@@ -1,0 +1,7 @@
+host: divinoluiz # par chave valor
+datacenter: 
+  location: São Paulo
+  router: 42
+roles: 
+  - web # Hífen "-" representa o elemento de uma lista
+  - dns # usar 2 espaços para identar e não tab
